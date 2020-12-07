@@ -1,26 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function App() {
+export interface Dog {
+  id: string;
+  url: string;
+  width: number;
+  height: number;
+}
+
+const App: React.FC = (): JSX.Element => {
+  const [dogs, setDogs] = useState<Dog[]>([]);
+  const [counter, setCounter] = useState<number>(0);
+
+  useEffect(() => {
+    const getDogs = async () => {
+      const { data } = await axios.get<Dog[]>(
+        "https://api.thedogapi.com/v1/images/search"
+      );
+
+      setDogs(data);
+    };
+    getDogs();
+  }, [counter]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div onClick={() => setCounter(counter + 1)}>
+      <h1>I love you Coco</h1>
+      {dogs.map((dog) => (
+        <img key={dog.id} alt="dog" src={dog.url} />
+      ))}
     </div>
   );
-}
+};
 
 export default App;
